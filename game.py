@@ -1,6 +1,8 @@
 """
 X2 Block clone
 
+Version 0.1
+
 https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 """
 
