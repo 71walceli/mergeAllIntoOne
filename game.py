@@ -26,12 +26,14 @@ def fall(gameGrid):
   fallen to the very bottom of the grid and stack one over others that are below
   in the same column.
   """
-  for row1 in range(len(gameGrid) -1, 0, -1):
-    row2 = row1 -1  # row1 is at the top- while row2 is closer to the bottom.
-    for column in range(len(gameGrid[row1])):
-      if gameGrid[row1][column] != 0 and gameGrid[row2][column] == 0:
-        gameGrid[row2][column] = gameGrid[row1][column]  # copy block downward
-        gameGrid[row1][column] = 0           # put a space in its previous place.
+
+  for column in range(len(gameGrid[0])):
+    for row in range(len(gameGrid) -1):
+      rowAbove = row +1
+      if gameGrid[rowAbove][column] != 0 and gameGrid[row][column] == 0:
+        gameGrid[row][column]      = gameGrid[rowAbove][column]
+        gameGrid[rowAbove][column] = 0
+
 
 def howFullIsGrid(gameGrid):
   """
