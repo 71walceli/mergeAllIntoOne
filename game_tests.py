@@ -1,3 +1,4 @@
+from random import randint
 import unittest
 import game
 
@@ -78,11 +79,25 @@ class MergingTest(unittest.TestCase):
     play(self.gameGrid, 3, 1)
     self.assertEqual(self.gameGrid, expectedOutcome)
 
+  def test_multipleMerge1(self):
+    play(self.gameGrid, 7, 1)
+    play(self.gameGrid, 4, 1)
+    play(self.gameGrid, 7, 3)
+    play(self.gameGrid, 4, 3)
+    play(self.gameGrid, 4, 2)
+    play(self.gameGrid, 4, 2)
+    self.assertEquals(self.gameGrid[0][2], 9)
+
   def tearDown(self):
     print()
     game.printGrid(self.gameGrid)
     
 width, height = 5, 7
+
+class miscGameplayTesting(unittest.TestCase):
+  def test_isGridFull1(self):
+    self.gameGrid = [[randint(1, 9) for x in range(width)] for y in range(height)]
+    self.assertTrue(game.isGridFull(self.gameGrid))
 
 if __name__ == "__main__":
   unittest.main()

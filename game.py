@@ -14,11 +14,11 @@ def aimAt(gameGrid):
   except ValueError:
     return -1
     
-def buildGameGrid(_width: int, _height: int):
+def buildGameGrid(width: int, height: int):
   """
-  Constructs game grid of given _width and _height
+  Constructs game grid of given width and height
   """
-  return [[0 for x in range(_width)] for y in range(_height)] 
+  return [[0 for x in range(width)] for y in range(height)] 
 
 def fall(gameGrid):
   """
@@ -52,10 +52,15 @@ def howFullIsGrid(gameGrid):
 
 def isGridFull(gameGrid):
   """
-  TODO: When the falling block logic is implemented fully, implement this only 
-  check for the top-most row (the one closest tn to the shooter).
+  Checks if gameGrid is full by checking if the top-most row is full of blocks.
   """
-  return howFullIsGrid(gameGrid) >= 1
+  topmostRow = len(gameGrid) -1
+  count = len(gameGrid[topmostRow])
+
+  for block in gameGrid[topmostRow]:
+    if block != 0:
+      count -= 1
+  return count == 0
 
 def makeMerges(gameGrid, column):
   row = -1
@@ -73,15 +78,18 @@ def makeMerges(gameGrid, column):
   if column != 0                       and gameGrid[row][columnLeft] == checkBlock :
     gameGrid[row][column]      += 1
     gameGrid[row][columnLeft]   = 0
+    makeMerges(gameGrid, column)
   
   if columnRight != len(gameGrid[row]) and gameGrid[row][columnRight] == checkBlock:
     gameGrid[row][column]      += 1
     gameGrid[row][columnRight]  = 0
+    makeMerges(gameGrid, column)
   
   if row != 0 and gameGrid[rowBelow][column] == checkBlock:
     actualBlock                = gameGrid[row][column] +1
     gameGrid[rowBelow][column] = actualBlock
     gameGrid[row][column]      = 0
+    makeMerges(gameGrid, column)
 
 def nextBlock():
   """
