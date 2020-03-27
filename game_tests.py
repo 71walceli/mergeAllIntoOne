@@ -2,50 +2,56 @@ from random import randint
 import unittest
 import game
 
-def play(gameGrid, block, column):
-  """
-  Play a turn for testing purposes. Lets exceptions spread, which the main game loop should
-  handle and act accordingly.
-  """
-  if column in range(width):  # range() domain is [0, width -1]
-    game.shoot(gameGrid, block, column)
-    game.makeMerges(gameGrid, column)  # testing needed!
-    game.fall(gameGrid)
-  else:
-    raise IndexError(f"Invalid column index: {column}")
 
-class MergingTest(unittest.TestCase):
+class BaseTestLogic(unittest.TestCase):
+  def play(self, gameGrid, block, column):
+    """
+    Play a turn for testing purposes. Lets exceptions spread, which the main game loop should
+    handle and act accordingly.
+    """
+    if column in range(width):  # range() domain is [0, width -1]
+      game.shoot(gameGrid, block, column)
+      game.makeMerges(gameGrid, column)  # testing needed!
+      game.fall(gameGrid)
+    else:
+      raise IndexError(f"Invalid column index: {column}")
+  
   def setUp(self):
     self.gameGrid = game.buildGameGrid(width, height)
 
+  def tearDown(self):
+    print()
+    game.printGrid(self.gameGrid)
+
+class MergeTesting(BaseTestLogic):
   def test_mergingDown1(self):
     column = 0
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
     self.assertEqual(self.gameGrid[0][column], 2)
   
   def test_mergingDown2(self):
     column = 2
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
     self.assertEqual(self.gameGrid[0][column], 2)
   
   def test_mergingDown3(self):
     column = 4
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 1, column)
     self.assertEqual(self.gameGrid[0][column], 2)
   
-  def test_mergingAtTop3(self):
+  def test_mergingAtTop1(self):
     column = 3
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 2, column)
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 2, column)
-    play(self.gameGrid, 1, column)
-    play(self.gameGrid, 2, column)
-    play(self.gameGrid, 3, column)  # stack at top of grid
-    play(self.gameGrid, 3, column)  # shoot and merge. This is wanted to work
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 2, column)
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 2, column)
+    self.play(self.gameGrid, 1, column)
+    self.play(self.gameGrid, 2, column)
+    self.play(self.gameGrid, 3, column)  # stack at top of grid
+    self.play(self.gameGrid, 3, column)  # shoot and merge. This is wanted to work
     self.assertEqual(self.gameGrid[6][column], 4)
 
   def test_mergeAndFall1(self):
@@ -58,9 +64,9 @@ class MergingTest(unittest.TestCase):
         [0,0,0,0,0],
         [0,0,0,0,0],
       ]
-    play(self.gameGrid, 3, 2)
-    play(self.gameGrid, 1, 2)
-    play(self.gameGrid, 3, 1)
+    self.play(self.gameGrid, 3, 2)
+    self.play(self.gameGrid, 1, 2)
+    self.play(self.gameGrid, 3, 1)
     self.assertEqual(self.gameGrid, expectedOutcome)
   
   def test_mergeAndFall2(self):
@@ -73,31 +79,47 @@ class MergingTest(unittest.TestCase):
         [0,0,0,0,0],
         [0,0,0,0,0],
       ]
-    play(self.gameGrid, 3, 2)
-    play(self.gameGrid, 1, 2)
-    play(self.gameGrid, 2, 2)
-    play(self.gameGrid, 3, 1)
+    self.play(self.gameGrid, 3, 2)
+    self.play(self.gameGrid, 1, 2)
+    self.play(self.gameGrid, 2, 2)
+    self.play(self.gameGrid, 3, 1)
     self.assertEqual(self.gameGrid, expectedOutcome)
 
   def test_multipleMerge1(self):
-    play(self.gameGrid, 7, 1)
-    play(self.gameGrid, 4, 1)
-    play(self.gameGrid, 7, 3)
-    play(self.gameGrid, 4, 3)
-    play(self.gameGrid, 4, 2)
-    play(self.gameGrid, 4, 2)
+    self.play(self.gameGrid, 7, 1)
+    self.play(self.gameGrid, 4, 1)
+    self.play(self.gameGrid, 7, 3)
+    self.play(self.gameGrid, 4, 3)
+    self.play(self.gameGrid, 4, 2)
+    self.play(self.gameGrid, 4, 2)
     self.assertEquals(self.gameGrid[0][2], 9)
-
-  def tearDown(self):
-    print()
-    game.printGrid(self.gameGrid)
+  
+  def test_multipleMerge2(self):
+    expectedBottomRow = [0,1,9,1,0]
+    self.play(self.gameGrid, 7, 1)
+    self.play(self.gameGrid, 4, 1)
+    self.play(self.gameGrid, 1, 1)
+    self.play(self.gameGrid, 7, 3)
+    self.play(self.gameGrid, 4, 3)
+    self.play(self.gameGrid, 1, 3)
+    self.play(self.gameGrid, 4, 2)
+    self.play(self.gameGrid, 4, 2)
+    self.assertEquals(self.gameGrid[0], expectedBottomRow)
     
+class miscGameplayTesting(BaseTestLogic):
+  class IsGridFullTest(BaseTestLogic):
+    def setUp(self):
+      pass
+
+    def test_isGridFull1(self):
+      self.gameGrid = [[randint(1, 9) for x in range(width)] for y in range(height)]
+      self.assertTrue(game.isGridFull(self.gameGrid))
+
+    def tearDown(self):
+      pass
+
 width, height = 5, 7
 
-class miscGameplayTesting(unittest.TestCase):
-  def test_isGridFull1(self):
-    self.gameGrid = [[randint(1, 9) for x in range(width)] for y in range(height)]
-    self.assertTrue(game.isGridFull(self.gameGrid))
 
 if __name__ == "__main__":
   unittest.main()
