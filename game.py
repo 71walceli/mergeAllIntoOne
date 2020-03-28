@@ -25,15 +25,17 @@ def fall(gameGrid):
   Makes the blocks fall into the empty spaces (the zeroes) until all blocks have
   fallen to the very bottom of the grid and stack one over others that are below
   in the same column.
+
+  FIXME Ensure to make absolutely all blocks fall. To be fixed in
+  fixFallingForGood branch. 
   """
 
   for column in range(len(gameGrid[0])):
-    for row in range(len(gameGrid) -1):
-      rowAbove = row +1
-      if gameGrid[rowAbove][column] != 0 and gameGrid[row][column] == 0:
-        gameGrid[row][column]      = gameGrid[rowAbove][column]
-        gameGrid[rowAbove][column] = 0
-
+    for block in range(len(gameGrid) -1):
+      blockAbove = block +1
+      if gameGrid[blockAbove][column] != 0 and gameGrid[block][column] == 0:
+        gameGrid[block][column]      = gameGrid[blockAbove][column]
+        gameGrid[blockAbove][column] = 0
 
 def howFullIsGrid(gameGrid):
   """
