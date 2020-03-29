@@ -118,6 +118,17 @@ class miscGameplayTesting(BaseTestLogic):
     def tearDown(self):
       pass
 
+  def test_nextBlockIsNotThrownIfNotPut(self):
+    self.play(self.gameGrid, 1, 2)
+    self.play(self.gameGrid, 2, 2)
+    self.play(self.gameGrid, 3, 2)
+    self.play(self.gameGrid, 4, 2)
+    self.play(self.gameGrid, 5, 2)
+    self.play(self.gameGrid, 6, 2)
+    self.play(self.gameGrid, 7, 2)
+    self.assertEquals(game.blockTemp, 7)
+    
+
 width, height = 5, 7
 
 

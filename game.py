@@ -128,19 +128,25 @@ def shoot(gameGrid, block, column):
   """
   Puts blocks in the bottom most row
   """
-  row = -1
+  row = -1  # Tracks what row to put blocks in. It is incremented in the following
+  # loop.
+  # _row os just an index to move though the column. The following loop stops when
+  # it finds the bottom most empty spot to put block in.
   for _row in range(len(gameGrid)):
     row += 1
     if gameGrid[_row][column] == 0:
       break
   
+  # Put the block in the bottom most blank
   if gameGrid[row][column] == 0:
-    gameGrid[row][column] == 0
+    #gameGrid[row][column] == 0
     gameGrid[row][column] = block
+    blockTemp = 0
   elif gameGrid[row][column] == block:
     gameGrid[row][column] += 1
+    blockTemp = block
   else:
-    pass
+    blockTemp = block
     #raise ValueError("The column is full. Can't shoot!")
     # TODO: Throw custom exception for the game
 
