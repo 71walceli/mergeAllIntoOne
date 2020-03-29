@@ -101,7 +101,7 @@ def nextBlock():
   TODO implement more dynamism according to the highest number there is in the
   grid.
 
-  TODO When block can't be put in grid, preserve it to not throw away.-
+  TODO When block can't be put in grid, preserve it to not throw it away.-
   """
   if blockTemp == 0:
     return randint(1, blockHighest)
@@ -158,8 +158,7 @@ def takeTurn(gameGrid):
     # previous one, to prevent the player from thowing away blocks.
     # TODO Improve self-arranging logic to fall() and merge() when it must
     makeMerges(gameGrid, column)    # TODO more testing!
-    fall(gameGrid)  # FIXME it isn't making stacking blocks fall when lower blocks
-    # merge.
+    fall(gameGrid)
   else:
     print("Invalid input")
     blockTemp = block
