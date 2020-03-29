@@ -1,6 +1,8 @@
 """
 X2 Block clone
 
+TODO make game object-oriented to solve all variable assignment issues
+
 Version 0.1
 
 https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
@@ -144,7 +146,7 @@ def shoot(gameGrid, block, column):
     blockTemp = 0
   elif gameGrid[row][column] == block:
     gameGrid[row][column] += 1
-    blockTemp = block
+    blockTemp = 0
   else:
     blockTemp = block
     #raise ValueError("The column is full. Can't shoot!")

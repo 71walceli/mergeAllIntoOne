@@ -1,3 +1,9 @@
+"""
+Golds all the test logic to ensore the game and all its components work as expected.
+
+TODO Refactor all test logic to support objects.
+"""
+
 from random import randint
 import unittest
 import game
