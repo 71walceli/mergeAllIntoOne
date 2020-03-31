@@ -1,5 +1,6 @@
 """
 X2 Block clone
+https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 
 TODO make game object-oriented to solve all variable assignment issues
 
@@ -7,7 +8,6 @@ TODO refactor all code to be polymorphic
 
 Version 0.1
 
-https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 """
 
 from random import randint  # Needed in order to generate all numbers
