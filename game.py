@@ -2,8 +2,6 @@
 X2 Block clone
 https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 
-TODO make game object-oriented to solve all variable assignment issues
-
 TODO refactor all code to be polymorphic
 
 Version 0.1
@@ -17,7 +15,7 @@ class X2BlocksCloneCliImpl:
   Command Line Interface implementation of X2BlocksClone
   """
 
-  def __init__(width, height, block_highest=5):
+  def __init__(self, width, height, block_highest=5):
     """
     Instances a new game. Constructs game grid of given width and height.
 
@@ -30,7 +28,9 @@ class X2BlocksCloneCliImpl:
     self._grid = [[0 for x in range(width)] for y in range(height)]
 
     # Other gameplay propertied
-    self._block_highest = block_highest
+    self._block_highest = block_highest  # TODO implement logic to look for the
+    # highest in the grid.
+    self._storedBlock   = 0
 
   def aimAt(self):
     try:
@@ -93,35 +93,31 @@ class X2BlocksCloneCliImpl:
         count -= 1     # count down for every used space.
     return count == 0  # returns trie if the top row is full.
 
+  # Unused
   def makeMerges(self, column):
     """
     Makes all the merges in a column happen. The merging occurs in this way:
 
+    TODO 2 Refactor this routine to do all posible merges in the given column
+    """
+
+  def merge(self, row, column):
+    """
+    Causes a block to merge as many times as it can. The prosess by which this      
+    happens is the following:
+
     1. A block's value is polled and stored.
     2. The stored value is compared for equality to the left block's value, and
     merged into the block whose value was stored.
-    3. As in the previous spep, the block on the righy is merged if the stored and
+    3. As in the previous step, the block on the righy is merged if the stored and
     the block's value match.
     4. The block over the one checked is merged downward as explained.
     
     The result is a block incremented ince for every succesful merge, at the same
-    positoon as the block whose value is taken, unless it was avove anotheer piece
+    position as the block whose value is taken, unless it was avove anotheer piece
     that had equal valuem, in which case, it will be one place below. All merges can
     hapoen atonce.
-
-    TODO 1 Make a routine out of the logic contained here so that it can be called
-    for a siven position in the grid, such as the exact position a block was thrown.
-
-    TODO 2 Refactor this routine to do all posible merges in the given column
     """
-
-    row = -1                             # As of TODO 1, this will be deleted, as it
-    for _row in range(self._height):     # would fetch the totmost block only to do
-      if self._grid[_row][column] != 0:  # the merging. Uswlwss if more than one
-        row += 1                         # merges can happen.
-      else:                              #  
-        break                            #  
-
     checkBlock  = self._grid[row][column]
     
     # Indexes to check surrounging blocks
@@ -132,50 +128,64 @@ class X2BlocksCloneCliImpl:
     if column != 0                       and self._grid[row][columnLeft] == checkBlock :
       self._grid[row][column]      += 1
       self._grid[row][columnLeft]   = 0
-      makeMerges(self._grid, column)
+      self.merge(row, column)
     
     if columnRight != len(self._grid[row]) and self._grid[row][columnRight] == checkBlock:
       self._grid[row][column]      += 1
       self._grid[row][columnRight]  = 0
-      makeMerges(self._grid, column)
+      self.merge(row, column)
     
     if row != 0 and self._grid[rowBelow][column] == checkBlock:
       actualBlock                = self._grid[row][column] +1
       self._grid[rowBelow][column] = actualBlock
       self._grid[row][column]      = 0
-      makeMerges(self._grid, column)
+      self.merge(row, column)
 
-  def nextBlock(self, ):
+  def nextBlock(self):
     """
-    Generate next block.
+    Generate next block to be shot
 
     TODO implement more dynamism according to the highest number there is in the
     grid.
 
-    TODO When block can't be put in grid, preserve it to not throw it away.-
+    TODO When block can't be put in grid, preserve it to not throw it away.
     """
-    if blockTemp == 0:
-      return randint(1, blockHighest)
-    return blockTemp
+    #if self._storedBlock == 0:
+    #  return randint(1, blockHighest)
+    #return self._storedBlock
+    return randint(1, blockHighest)
 
-  def play(self, self._grid):
+  def play(self):
     """
     Manages all the gameplay logic.
     """
-    while not isGridFull(self._grid):
-      # TODO: Tidy up login for every turn
+    while not self.isGridFull():
+      # TODO: Tidy up logic for every turn
       # TODO: Handle all excpetions
-      takeTurn(self._grid)
-      printGrid(self._grid)
+      self.takeTurn()
+      self.printGrid()
 
-  def printGrid(self, self._grid):
+  def printGrid(self):
+    """
+    Prints the actual grid to the terminal in the followig format:
+
+    ```
+    0 0 0 . . .
+    0 0 0 . . .
+    0 0 0 . . .
+    . . . .    
+    . . .   .  
+    . . .     .
+    ```
+    """
+    print()
     for row in self._grid:
       for cell in row:
         print(cell, end=" ")
       print()
     print()
 
-  def shoot(self, self._grid, block, column):
+  def shoot(self, block, column):
     """
     Puts blocks in the bottom most row
     """
@@ -192,47 +202,42 @@ class X2BlocksCloneCliImpl:
     if self._grid[row][column] == 0:
       #self._grid[row][column] == 0
       self._grid[row][column] = block
-      blockTemp = 0
+      #self._storedBlock = 0
     elif self._grid[row][column] == block:
       self._grid[row][column] += 1
-      blockTemp = 0
+      #self._storedBlock = 0
     else:
-      blockTemp = block
+      return None
+      #self._storedBlock = block
       #raise ValueError("The column is full. Can't shoot!")
       # TODO: Throw custom exception for the game
+    
+    return (row, column)
 
-
-  def takeTurn(self, self._grid):
+  def takeTurn(self):
     """
     Play a turn every time. Lets exceptions spread, which the main game loop should
     handle and act accordingly.
     """
-    block = nextBlock()
+    block = self.nextBlock()
     print(f"Block: {block}")
-    column = aimAt(self._grid)    # what column to shoot at?
+    column = self.aimAt()    # what column to shoot at?
     if column in range(width):  # range() domain is [0, width -1]
-      shoot(self._grid, block, column)  # FIXME when block isn't shot, return the 
-      # previous one, to prevent the player from thowing away blocks.
+      shotPosition = self.shoot(block, column)  # FIXME when block isn't shot, return #
+      # the previous one, to prevent the player from thowing away blocks.
       # TODO Improve self-arranging logic to fall() and merge() when it must
-      makeMerges(self._grid, column)    # TODO more testing!
-      fall(self._grid)
+      if shotPosition != None:
+        self.merge(shotPosition[0], shotPosition[1])    # TODO more testing!
+      self.fall()
     else:
       print("Invalid input")
-      blockTemp = block
+      self._storedBlock = block
 
 width, height = 5, 7
 
 """
-stores a block when it couldn't be shot
-"""
-blockTemp = 0
-
-"""
 stores the highest block in the board. 
-
-TODO implement logic to look for the highest in the grid.
 """
-blockHighest = 5
 
 if __name__ == "__main__":
   game = X2BlocksCloneCliImpl(width, height)
