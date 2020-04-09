@@ -109,18 +109,20 @@ class X2BlocksCloneCliImpl:
     1. A block's value is polled and stored.
     2. The stored value is compared for equality to the left block's value, and
     merged into the block whose value was stored.
-    3. As in the previous step, the block on the righy is merged if the stored and
+    3. As in the previous step, the block on the right is merged if the stored and
     the block's value match.
     4. The block over the one checked is merged downward as explained.
     
-    The result is a block incremented ince for every succesful merge, at the same
-    position as the block whose value is taken, unless it was avove anotheer piece
-    that had equal valuem, in which case, it will be one place below. All merges can
-    hapoen atonce.
+    The result is a block incremented once for every successful merge, at the same
+    position as the block whose value is taken, unless it was above another piece
+    that had equal value, in which case, it will be one place below. All merges can
+    happen at once.
     """
     checkBlock  = self._grid[row][column]
+    if checkBlock == 0:
+      return  # Merging doesn't happen if piece in this position is zero.
     
-    # Indexes to check surrounging blocks
+    # Indexes to check surrounding blocks
     columnLeft  = column -1
     columnRight = column +1
     rowBelow    = row -1
@@ -136,10 +138,10 @@ class X2BlocksCloneCliImpl:
       self.merge(row, column)
     
     if row != 0 and self._grid[rowBelow][column] == checkBlock:
-      actualBlock                = self._grid[row][column] +1
+      actualBlock                  = self._grid[row][column] +1
       self._grid[rowBelow][column] = actualBlock
       self._grid[row][column]      = 0
-      self.merge(row, column)
+      self.merge(rowBelow, column)
 
   def nextBlock(self):
     """
@@ -153,7 +155,7 @@ class X2BlocksCloneCliImpl:
     #if self._storedBlock == 0:
     #  return randint(1, blockHighest)
     #return self._storedBlock
-    return randint(1, blockHighest)
+    return randint(1, self._block_highest)
 
   def play(self):
     """
@@ -167,7 +169,7 @@ class X2BlocksCloneCliImpl:
 
   def printGrid(self):
     """
-    Prints the actual grid to the terminal in the followig format:
+    Prints the actual grid to the terminal in the following format:
 
     ```
     0 0 0 . . .
@@ -175,7 +177,7 @@ class X2BlocksCloneCliImpl:
     0 0 0 . . .
     . . . .    
     . . .   .  
-    . . .     .
+    . . .     . 
     ```
     """
     print()
