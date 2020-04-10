@@ -15,7 +15,7 @@ class X2BlocksCloneCliImpl:
   Command Line Interface implementation of X2BlocksClone
   """
 
-  def __init__(self, width, height, block_highest=5):
+  def __init__(self, width, height, block_highest=5, grid=None):
     """
     Instances a new game. Constructs game grid of given width and height.
 
@@ -25,9 +25,12 @@ class X2BlocksCloneCliImpl:
     # General game grid attributes
     self._width = width
     self._height = height
-    self._grid = [[0 for x in range(width)] for y in range(height)]
+    if grid == None:
+      self._grid = [[0 for x in range(width)] for y in range(height)]
+    else:
+      self._grid = grid
 
-    # Other gameplay propertied
+    # Other gameplay properties
     self._block_highest = block_highest  # TODO implement logic to look for the
     # highest in the grid.
     self._storedBlock   = 0
@@ -130,12 +133,12 @@ class X2BlocksCloneCliImpl:
     if column != 0                       and self._grid[row][columnLeft] == checkBlock :
       self._grid[row][column]      += 1
       self._grid[row][columnLeft]   = 0
-      self.merge(row, column)
+      #self.merge(row, column)
     
     if columnRight != len(self._grid[row]) and self._grid[row][columnRight] == checkBlock:
       self._grid[row][column]      += 1
       self._grid[row][columnRight]  = 0
-      self.merge(row, column)
+      #self.merge(row, column)
     
     if row != 0 and self._grid[rowBelow][column] == checkBlock:
       actualBlock                  = self._grid[row][column] +1
