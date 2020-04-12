@@ -4,11 +4,12 @@ https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 
 TODO refactor all code to be polymorphic
 
-Version 0.1
+TODO Add getters and setters
 
+Version 0.3
 """
 
-from random import randint  # Needed in order to generate all numbers
+from random import randint  # Used by nextBlock()
 
 class X2BlocksCloneCliImpl:
   """
@@ -158,6 +159,8 @@ class X2BlocksCloneCliImpl:
     #if self._storedBlock == 0:
     #  return randint(1, blockHighest)
     #return self._storedBlock
+    if self._storedBlock != 0:
+      return self._storedBlock
     return randint(1, self._block_highest)
 
   def play(self):
@@ -169,6 +172,22 @@ class X2BlocksCloneCliImpl:
       # TODO: Handle all excpetions
       self.takeTurn()
       self.printGrid()
+
+  def playTurn(self, column, block):
+    """
+    Contains all the game logic to play a game turn. It implements all the internalls#
+    from putting a piece to counting the score and handling errors. One inporrtant
+    highlight is that it stores
+    """
+    shotPosition = self.shoot(block, column)  # FIXME when block isn't shot, return
+    # the previous one, to prevent the player from thowing away blocks.
+    # TODO Improve self-arranging logic to fall() and merge() when it must
+    if shotPosition != None:
+      self.merge(shotPosition[0], shotPosition[1])
+      self._storedBlock = 0
+    else:
+      self._storedBlock = block
+    self.fall()
 
   def printGrid(self):
     """
@@ -192,7 +211,10 @@ class X2BlocksCloneCliImpl:
 
   def shoot(self, block, column):
     """
-    Puts blocks in the bottom most row
+    Puts blocks in the bottom most cell of the frid and returns the position where it
+    was put.
+
+    TODO Throw errors if given block could not be put.
     """
     row = -1  # Tracks what row to put blocks in. It is incremented in the following
     # loop.
@@ -212,6 +234,7 @@ class X2BlocksCloneCliImpl:
       self._grid[row][column] += 1
       #self._storedBlock = 0
     else:
+      #self._storedBlock = block
       return None
       #self._storedBlock = block
       #raise ValueError("The column is full. Can't shoot!")
@@ -227,17 +250,8 @@ class X2BlocksCloneCliImpl:
     block = self.nextBlock()
     print(f"Block: {block}")
     column = self.aimAt()    # what column to shoot at?
-    if column in range(width):  # range() domain is [0, width -1]
-      shotPosition = self.shoot(block, column)  # FIXME when block isn't shot, return #
-      # the previous one, to prevent the player from thowing away blocks.
-      # TODO Improve self-arranging logic to fall() and merge() when it must
-      if shotPosition != None:
-        self.merge(shotPosition[0], shotPosition[1])    # TODO more testing!
-      self.fall()
-    else:
-      print("Invalid input")
-      self._storedBlock = block
-
+    self.playTurn(column, block)
+    
 width, height = 5, 7
 
 """
