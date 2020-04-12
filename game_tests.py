@@ -15,13 +15,7 @@ class BaseTestLogic(unittest.TestCase):
     Play a turn for testing purposes. Lets exceptions spread, which the main game loop should
     handle and act accordingly.
     """
-    if column in range(width):  # range() domain is [0, width -1]
-      shotPosition = self.game.shoot(block, column)
-      if shotPosition != None:
-        self.game.merge(shotPosition[0], shotPosition[1])  # testing needed!
-      self.game.fall()
-    else:
-      raise IndexError(f"Invalid column index: {column}")
+    self.game.playTurn(column, block)
   
   def setUp(self):
     self.game = game.X2BlocksCloneCliImpl(width, height)
@@ -144,7 +138,7 @@ class MergeTesting(BaseTestLogic):
     self.assertEquals(self.game._grid[0], expectedBottomRow)
     
 class miscGameplayTesting(BaseTestLogic):
-  def test_highestBlockLogic1(self):
+  def test_blockNotThrownAwayIfNotPut(self):
     self.play(1, 2)
     self.play(2, 2)
     self.play(3, 2)
@@ -152,7 +146,8 @@ class miscGameplayTesting(BaseTestLogic):
     self.play(5, 2)
     self.play(6, 2)
     self.play(7, 2)
-    self.assertEquals(self.game._block_highest, 7)
+    self.play(8, 2)
+    self.assertEquals(self.game.nextBlock(), 8)
     
 class IsGridFullTest(BaseTestLogic):
   def setUp(self):
