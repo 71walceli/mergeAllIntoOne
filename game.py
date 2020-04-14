@@ -5,7 +5,6 @@ https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 TODO refactor all code to be polymorphic
 
 TODO Add getters and setters
-
 Version 0.3
 """
 
@@ -102,7 +101,7 @@ class X2BlocksCloneCliImpl:
     """
     Makes all the merges in a column happen. The merging occurs in this way:
 
-    TODO 2 Refactor this routine to do all posible merges in the given column
+    TODO 2 Refactor this routine to do all possible merges in the given column
     """
 
   def merge(self, row, column):
@@ -153,8 +152,6 @@ class X2BlocksCloneCliImpl:
 
     TODO implement more dynamism according to the highest number there is in the
     grid.
-
-    TODO When block can't be put in grid, preserve it to not throw it away.
     """
     #if self._storedBlock == 0:
     #  return randint(1, blockHighest)
