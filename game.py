@@ -94,14 +94,13 @@ class X2BlocksCloneCliImpl:
     for block in self._grid[topmostRow]:
       if block != 0:
         count -= 1     # count down for every used space.
-    return count == 0  # returns trie if the top row is full.
+    return count == 0  # returns true if the top row is full.
 
-  # Unused
   def makeMerges(self, column):
     """
     Makes all the merges in a column happen. The merging occurs in this way:
 
-    TODO 2 Refactor this routine to do all possible merges in the given column
+    TODO Refactor this routine to do all possible merges in the given column
     """
 
   def merge(self, row, column):
@@ -173,7 +172,7 @@ class X2BlocksCloneCliImpl:
   def playTurn(self, column, block):
     """
     Contains all the game logic to play a game turn. It implements all the internalls#
-    from putting a piece to counting the score and handling errors. One inporrtant
+    from putting a piece to counting the score and handling errors. One important
     highlight is that it stores
     """
     shotPosition = self.shoot(block, column)  # FIXME when block isn't shot, return
@@ -208,7 +207,7 @@ class X2BlocksCloneCliImpl:
 
   def shoot(self, block, column):
     """
-    Puts blocks in the bottom most cell of the frid and returns the position where it
+    Puts blocks in the bottom most cell of the grid and returns the position where it
     was put.
 
     TODO Throw errors if given block could not be put.
