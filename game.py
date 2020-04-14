@@ -13,6 +13,8 @@ from random import randint  # Used by nextBlock()
 class X2BlocksCloneCliImpl:
   """
   Command Line Interface implementation of X2BlocksClone
+
+  TODO Document members!
   """
 
   def __init__(self, width, height, block_highest=5, grid=None):
@@ -34,20 +36,14 @@ class X2BlocksCloneCliImpl:
     self._block_highest = block_highest  # TODO implement logic to look for the
     # highest in the grid.
     self._storedBlock   = 0
+    self._score = 0
 
   def aimAt(self):
-    try:
-      return int(input(f"Where to shoot?\t"))
-    except ValueError:
-      return -1
-
-  # May no longer be needed as __init__ constructor can build the grid.
-  #def buildself._grid(self, width: int, height: int):
-  #  """
-  #  Constructs game grid of given width and height
-  #  """
-  #  return [[0 for x in range(width)] for y in range(height)] 
-
+    """
+    Used to ask from terminal where to put next block.
+    """
+    return int(input(f"What column to put block at?\t"))
+    
   def fall(self):
     """
     Makes the blocks fall into the empty spaces (the zeroes) until all blocks have
@@ -105,8 +101,8 @@ class X2BlocksCloneCliImpl:
 
   def merge(self, row, column):
     """
-    Causes a block to merge as many times as it can. The prosess by which this      
-    happens is the following:
+    Causes a block to merge as many times as it can and increments the score for
+    every nerge. The prosess by which this happens is the following:
 
     1. A block's value is polled and stored.
     2. The stored value is compared for equality to the left block's value, and
@@ -124,26 +120,43 @@ class X2BlocksCloneCliImpl:
     if checkBlock == 0:
       return  # Merging doesn't happen if piece in this position is zero.
     
-    # Indexes to check surrounding blocks
-    columnLeft  = column -1
-    columnRight = column +1
-    rowBelow    = row -1
+    mergedLeft  = self.mergeLeft (checkBlock, row, column)
+    mergedRight = self.mergeRight(checkBlock, row, column)
+    mergedDown  = self.mergeDown (checkBlock, row, column)
 
-    if column != 0                       and self._grid[row][columnLeft] == checkBlock :
-      self._grid[row][column]      += 1
-      self._grid[row][columnLeft]   = 0
-      #self.merge(row, column)
+    self._score += mergedLeft +mergedRight +mergedDown 
+  
+  def mergeLeft(self, checkBlock, row, column):
+    """
+    TODO Document this!
+    """
+    doable = column != 0 and self._grid[row][column -1] == checkBlock 
+    if doable:
+      self._grid[row][column]   += 1
+      self._grid[row][column -1] = 0
+    return doable
     
-    if columnRight != len(self._grid[row]) and self._grid[row][columnRight] == checkBlock:
-      self._grid[row][column]      += 1
-      self._grid[row][columnRight]  = 0
-      #self.merge(row, column)
+  def mergeRight(self, checkBlock, row, column):
+    """
+    TODO Document this!
+    """
+    doable = column +1 != len(self._grid[row]) and self._grid[row][column +1] == checkBlock
+    if doable:
+      self._grid[row][column]   += 1
+      self._grid[row][column +1] = 0
+    return doable
     
-    if row != 0 and self._grid[rowBelow][column] == checkBlock:
-      actualBlock                  = self._grid[row][column] +1
-      self._grid[rowBelow][column] = actualBlock
-      self._grid[row][column]      = 0
-      self.merge(rowBelow, column)
+  def mergeDown(self, checkBlock, row, column):
+    """
+    TODO Document this!
+    """
+    doable = row != 0 and self._grid[row -1][column] == checkBlock
+    if doable:
+      actualBlock                = self._grid[row][column] +1
+      self._grid[row -1][column] = actualBlock
+      self._grid[row][column]    = 0
+      self.merge(row -1, column)
+    return doable
 
   def nextBlock(self):
     """
@@ -181,6 +194,7 @@ class X2BlocksCloneCliImpl:
     if shotPosition != None:
       self.merge(shotPosition[0], shotPosition[1])
       self._storedBlock = 0
+      self._score += 1  # The score will be incremented for every block put in board.
     else:
       self._storedBlock = block
     self.fall()
@@ -255,6 +269,8 @@ stores the highest block in the board.
 """
 
 if __name__ == "__main__":
+  # TODO AExtract all of CLI logic here
+
   game = X2BlocksCloneCliImpl(width, height)
   game.play()
 

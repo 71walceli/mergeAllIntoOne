@@ -4,8 +4,9 @@ Holds all the test logic to ensore the game and all its components work as expec
 TODO Refactor all test logic to support objects.
 """
 
-from random import randint
 import unittest
+from random import randint
+
 import game
 
 
@@ -22,6 +23,14 @@ class BaseTestLogic(unittest.TestCase):
 
   def tearDown(self):
     self.game.printGrid()
+
+class IsGridFullTest(BaseTestLogic):
+  def setUp(self):
+    grid = [[randint(1, 9) for x in range(width)] for y in range(height)]
+    self.game = game.X2BlocksCloneCliImpl(0, 0, grid=grid)
+
+  def test_isGridFull1(self):
+    self.assertTrue(self.game.isGridFull())
 
 class MergeTesting(BaseTestLogic):
   def test_mergingDown1(self):
@@ -137,7 +146,7 @@ class MergeTesting(BaseTestLogic):
     self.play(4, 2)
     self.assertEquals(self.game._grid[0], expectedBottomRow)
     
-class miscGameplayTesting(BaseTestLogic):
+class MiscGameplayTesting(BaseTestLogic):
   def test_blockNotThrownAwayIfNotPut(self):
     self.play(1, 2)
     self.play(2, 2)
@@ -148,15 +157,13 @@ class miscGameplayTesting(BaseTestLogic):
     self.play(7, 2)
     self.play(8, 2)
     self.assertEquals(self.game.nextBlock(), 8)
-    
-class IsGridFullTest(BaseTestLogic):
-  def setUp(self):
-    grid = [[randint(1, 9) for x in range(width)] for y in range(height)]
-    self.game = game.X2BlocksCloneCliImpl(0, 0, grid=grid)
 
-  def test_isGridFull1(self):
-    self.assertTrue(self.game.isGridFull())
-
+class ScoreTests(BaseTestLogic):
+  def test_ScoreAfterPuttingBlocks(self):
+    blocks = 10
+    for block in range(blocks):
+      self.game.playTurn(randint(0, 5), block)
+    self.assertEqual(self.game._score, blocks)
 
 width, height = 5, 7
 
