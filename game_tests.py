@@ -18,6 +18,66 @@ class BaseTestLogic(unittest.TestCase):
     """
     self.game.playTurn(column, block)
   
+  def mergingDown1(self):
+    column = 0
+    self.play(1, column)
+    self.play(1, column)
+
+  def mergingAtTop1(self):
+    """
+    Initial state:
+
+    ```
+    0 0 0 1 0
+    0 0 0 2 0
+    0 0 0 1 0
+    0 0 0 2 0
+    0 0 0 1 0
+    0 0 0 2 0
+    0 0 0 3 0
+          ^
+          3
+    ```
+    """
+    column = 3
+    self.play(1, column)
+    self.play(2, column)
+    self.play(1, column)
+    self.play(2, column)
+    self.play(1, column)
+    self.play(2, column)
+    self.play(3, column)  # stack at top of grid
+    self.play(3, column)  # shoot and merge. This is expected to work.
+
+  def mergeAndFall2(self):
+    self.play(3, 2)
+    self.play(1, 2)
+    self.play(2, 2)
+    self.play(3, 1)
+
+  def multipleMerge2(self):
+    """
+    Initial state:
+
+    ```
+    0 7 4 7 0
+    0 4 4 4 0
+    0 1 0 1 0
+    0 0 0 0 0
+    0 0 0 0 0
+    0 0 0 0 0
+    0 0 0 0 0
+    ```
+    """
+    self.play(7, 1)
+    self.play(4, 1)
+    self.play(1, 1)
+    self.play(7, 3)
+    self.play(4, 3)
+    self.play(1, 3)
+    self.play(4, 2)
+    self.play(4, 2)
+
   def setUp(self):
     self.game = game.X2BlocksCloneCliImpl(width, height)
 
@@ -43,9 +103,7 @@ class MergeTesting(BaseTestLogic):
       [0,0,0,0,0],
       [0,0,0,0,0]
     ]
-    column = 0
-    self.play(1, column)
-    self.play(1, column)
+    self.mergingDown1()
     self.assertEqual(self.game._grid, expected)
   
   def test_mergingDown2(self):
@@ -61,20 +119,7 @@ class MergeTesting(BaseTestLogic):
     self.assertEqual(self.game._grid[0][column], 2)
   
   def test_mergingAtTop1(self):
-    column = 3
-    """
-    Initial state:
-
-    0 0 0 1 0
-    0 0 0 2 0
-    0 0 0 1 0
-    0 0 0 2 0
-    0 0 0 1 0
-    0 0 0 2 0
-    0 0 0 3 0
-          ^
-          3
-    """
+    self.mergingAtTop1()
     expected = [
       [0,0,0,1,0],
       [0,0,0,2,0],
@@ -84,14 +129,6 @@ class MergeTesting(BaseTestLogic):
       [0,0,0,2,0],
       [0,0,0,4,0]
     ]
-    self.play(1, column)
-    self.play(2, column)
-    self.play(1, column)
-    self.play(2, column)
-    self.play(1, column)
-    self.play(2, column)
-    self.play(3, column)  # stack at top of grid
-    self.play(3, column)  # shoot and merge. This is wanted to work
     self.assertEqual(self.game._grid, expected)
 
   def test_mergeAndFall1(self):
@@ -119,10 +156,7 @@ class MergeTesting(BaseTestLogic):
         [0,0,0,0,0],
         [0,0,0,0,0],
       ]
-    self.play(3, 2)
-    self.play(1, 2)
-    self.play(2, 2)
-    self.play(3, 1)
+    self.mergeAndFall2()
     self.assertEqual(self.game._grid, expected)
 
   def test_multipleMerge1(self):
@@ -136,14 +170,7 @@ class MergeTesting(BaseTestLogic):
   
   def test_multipleMerge2(self):
     expectedBottomRow = [0,1,9,1,0]
-    self.play(7, 1)
-    self.play(4, 1)
-    self.play(1, 1)
-    self.play(7, 3)
-    self.play(4, 3)
-    self.play(1, 3)
-    self.play(4, 2)
-    self.play(4, 2)
+    self.multipleMerge2()
     self.assertEquals(self.game._grid[0], expectedBottomRow)
     
 class MiscGameplayTesting(BaseTestLogic):
@@ -159,11 +186,24 @@ class MiscGameplayTesting(BaseTestLogic):
     self.assertEquals(self.game.nextBlock(), 8)
 
 class ScoreTests(BaseTestLogic):
+  def test_ScoreAfterMerging1(self):
+    self.mergingAtTop1()
+    self.assertEqual(self.game._score, 9)
+  
+  def test_ScoreAfterMerging2(self):
+    self.mergeAndFall2()
+    self.assertEqual(self.game._score, 5)
+
+  def test_ScoreAfterMerging3(self):
+    self.multipleMerge2()
+    self.assertEqual(self.game._score, 13)
+
   def test_ScoreAfterPuttingBlocks(self):
     blocks = 10
     for block in range(blocks):
-      self.game.playTurn(randint(0, 5), block)
+      self.game.playTurn(randint(0, 4), block)
     self.assertEqual(self.game._score, blocks)
+  
 
 width, height = 5, 7
 

@@ -37,12 +37,6 @@ class X2BlocksCloneCliImpl:
     # highest in the grid.
     self._storedBlock   = 0
     self._score = 0
-
-  def aimAt(self):
-    """
-    Used to ask from terminal where to put next block.
-    """
-    return int(input(f"What column to put block at?\t"))
     
   def fall(self):
     """
@@ -242,6 +236,7 @@ class X2BlocksCloneCliImpl:
       #self._storedBlock = 0
     elif self._grid[row][column] == block:
       self._grid[row][column] += 1
+      self._score += 1
       #self._storedBlock = 0
     else:
       #self._storedBlock = block
@@ -259,7 +254,9 @@ class X2BlocksCloneCliImpl:
     """
     block = self.nextBlock()
     print(f"Block: {block}")
-    column = self.aimAt()    # what column to shoot at?
+    print(f"Score: {self._score}")
+    column = int(input(f"What column to put block at?\t"))  # what column to shoot
+    # at?
     self.playTurn(column, block)
     
 width, height = 5, 7
@@ -269,7 +266,7 @@ stores the highest block in the board.
 """
 
 if __name__ == "__main__":
-  # TODO AExtract all of CLI logic here
+  # TODO Extract all of CLI logic out of the X2BlocksCloneCliImpl
 
   game = X2BlocksCloneCliImpl(width, height)
   game.play()
