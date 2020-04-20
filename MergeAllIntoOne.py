@@ -2,15 +2,13 @@
 X2 Block clone
 https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 
-TODO refactor all code to be polymorphic
-
 TODO Add getters and setters
 Version 0.3
 """
 
 from random import randint  # Used by nextBlock()
 
-class X2BlocksCloneCliImpl:
+class MergeAllIntoOne:
   """
   Command Line Interface implementation of X2BlocksClone
 
@@ -19,7 +17,9 @@ class X2BlocksCloneCliImpl:
 
   def __init__(self, width, height, block_highest=5, grid=None):
     """
-    Instances a new game. Constructs game grid of given width and height.
+    Instances a new game. Constructs game grid of given `grid`.
+
+    TODO Let `grid` also be a tuple of integers that replace `width` and `height`
 
     blockHighest allows to set up to what number can be randomly generated.
     """
@@ -30,7 +30,9 @@ class X2BlocksCloneCliImpl:
     if grid == None:
       self._grid = [[0 for x in range(width)] for y in range(height)]
     else:
-      self._grid = grid
+      self._grid   = grid
+      self._width  = len(self._grid[0])
+      self._height = len(self._grid)
 
     # Other gameplay properties
     self._block_highest = block_highest  # TODO implement logic to look for the
@@ -72,14 +74,14 @@ class X2BlocksCloneCliImpl:
         if cell != 0:
           percentage += factor
     
-    return round(percentage, ndigits=2)
+    return round(percentage, 2)
 
   def isGridFull(self):
     """
     Checks if self._grid is full by checking if the top-most row is full of blocks.
     """
     topmostRow = self._height -1  # index fir topmost row
-    count = width
+    count = self._width
 
     for block in self._grid[topmostRow]:
       if block != 0:
@@ -96,7 +98,7 @@ class X2BlocksCloneCliImpl:
   def merge(self, row, column):
     """
     Causes a block to merge as many times as it can and increments the score for
-    every nerge. The prosess by which this happens is the following:
+    every merge. The prosess by which this happens is the following:
 
     1. A block's value is polled and stored.
     2. The stored value is compared for equality to the left block's value, and
@@ -166,21 +168,10 @@ class X2BlocksCloneCliImpl:
       return self._storedBlock
     return randint(1, self._block_highest)
 
-  def play(self):
-    """
-    Manages all the gameplay logic.
-    """
-    while not self.isGridFull():
-      # TODO: Tidy up logic for every turn
-      # TODO: Handle all excpetions
-      self.takeTurn()
-      self.printGrid()
-
   def playTurn(self, column, block):
     """
-    Contains all the game logic to play a game turn. It implements all the internalls#
-    from putting a piece to counting the score and handling errors. One important
-    highlight is that it stores
+    Contains all the game logic to play a game turn. It implements all the internalls
+    from putting a piece to counting the score and handling errors. 
     """
     shotPosition = self.shoot(block, column)  # FIXME when block isn't shot, return
     # the previous one, to prevent the player from thowing away blocks.
@@ -192,26 +183,6 @@ class X2BlocksCloneCliImpl:
     else:
       self._storedBlock = block
     self.fall()
-
-  def printGrid(self):
-    """
-    Prints the actual grid to the terminal in the following format:
-
-    ```
-    0 0 0 . . .
-    0 0 0 . . .
-    0 0 0 . . .
-    . . . .    
-    . . .   .  
-    . . .     . 
-    ```
-    """
-    print()
-    for row in self._grid:
-      for cell in row:
-        print(cell, end=" ")
-      print()
-    print()
 
   def shoot(self, block, column):
     """
@@ -246,28 +217,3 @@ class X2BlocksCloneCliImpl:
       # TODO: Throw custom exception for the game
     
     return (row, column)
-
-  def takeTurn(self):
-    """
-    Play a turn every time. Lets exceptions spread, which the main game loop should
-    handle and act accordingly.
-    """
-    block = self.nextBlock()
-    print(f"Block: {block}")
-    print(f"Score: {self._score}")
-    column = int(input(f"What column to put block at?\t"))  # what column to shoot
-    # at?
-    self.playTurn(column, block)
-    
-width, height = 5, 7
-
-"""
-stores the highest block in the board. 
-"""
-
-if __name__ == "__main__":
-  # TODO Extract all of CLI logic out of the X2BlocksCloneCliImpl
-
-  game = X2BlocksCloneCliImpl(width, height)
-  game.play()
-

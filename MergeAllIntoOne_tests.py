@@ -1,13 +1,11 @@
 """
 Holds all the test logic to ensore the game and all its components work as expected.
-
-TODO Refactor all test logic to support objects.
 """
 
 import unittest
 from random import randint
 
-import game
+import MergeAllIntoOne
 
 
 class BaseTestLogic(unittest.TestCase):
@@ -79,15 +77,15 @@ class BaseTestLogic(unittest.TestCase):
     self.play(4, 2)
 
   def setUp(self):
-    self.game = game.X2BlocksCloneCliImpl(width, height)
+    self.game = MergeAllIntoOne.MergeAllIntoOne(width, height)
 
-  def tearDown(self):
-    self.game.printGrid()
+  #def tearDown(self):
+  #  self.MergeAllIntoOne.printGrid()
 
 class IsGridFullTest(BaseTestLogic):
   def setUp(self):
     grid = [[randint(1, 9) for x in range(width)] for y in range(height)]
-    self.game = game.X2BlocksCloneCliImpl(0, 0, grid=grid)
+    self.game = MergeAllIntoOne.MergeAllIntoOne(0, 0, grid=grid)
 
   def test_isGridFull1(self):
     self.assertTrue(self.game.isGridFull())
