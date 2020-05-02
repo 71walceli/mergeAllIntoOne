@@ -1,0 +1,6 @@
+- [ ] 1 Add getters and setters
+- [ ] 2 Document members! if MergeAllIntoOne class
+- [x] 3 Let `grid` also be a tuple of integers that replace `width` and `height`
+- [ ] 4 Handle all exceptions
+- [ ] 5 At shoot, it looks like self.mergedDown()
+- [ ] 6 Greedy column and row merging

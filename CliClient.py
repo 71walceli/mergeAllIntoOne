@@ -5,10 +5,10 @@ def play(game):
   Manages all the gameplay logic.
   """
   while not game.isGridFull():
-    # TODO: Handle all excpetions
+    # TODO 4 Handle all excpetions
     block = game.nextBlock()
     print(f"Block: {block}")
-    print(f"Score: {game._score}")
+    print(f"Score: {game.getScore()}")
     column = int(input(f"What column to put block at?\t"))
     game.playTurn(column, block)
     printGrid(game)
@@ -27,7 +27,7 @@ def printGrid(game):
   ```
   """
   print()
-  for row in game._grid:
+  for row in game.getGrid():
     for cell in row:
       print(cell, end=" ")
     print()
@@ -37,5 +37,5 @@ def printGrid(game):
 width, height = 5, 7
 
 if __name__ == "__main__":
-  game = MergeAllIntoOne.MergeAllIntoOne(width, height)
+  game = MergeAllIntoOne.MergeAllIntoOne(grid=(width, height))
   play(game)

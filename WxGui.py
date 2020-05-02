@@ -2,6 +2,6 @@ import MergeAllIntoOne
 import wx
 
 app = wx.App()
-frm = wx.Frame(None, title="Hello World")
-frm.Show()
+frame = wx.Frame(None, title="Hello World")
+frame.Show()
 app.MainLoop()
