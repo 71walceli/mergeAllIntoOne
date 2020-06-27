@@ -26,10 +26,10 @@ class wxClient(wx.Frame):
     #self.AddChild(gameSizer)
 
   def createGrid(self):
-    self.gamePanel = wx.GridSizer(self.game.getWidth(), self.game.getHeight(), 0, 0)
+    self.gamePanel = wx.GridBagSizer(3, 3)
     for y in range(len(self.game.getGrid())):
       for x in range(len(self.game.getGrid()[y])):
-        self.gamePanel.Add(wxBlock(self, (x,y)), 0, wx.EXPAND)  # BUG 8 Only one of the buttons
+        self.gamePanel.Add(wxBlock(self, (x,y)), pos=(x,y), span=(1,1), flag=wx.EXPAND)  # BUG 8 Only one of the buttons
         # actually show up, instead of showing all the tiles.
 
 
