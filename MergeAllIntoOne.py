@@ -17,6 +17,8 @@ class MergeAllIntoOne:
   ----------
   blockHighest : int
     Allows to set up to what number can be randomly generated.
+  grid : list[list]
+    The game area abstraction
     
   TODO 2 Document the rest of members!
   """
@@ -88,6 +90,7 @@ class MergeAllIntoOne:
         count -= 1     # count down for every used space.
     return count == 0  # returns true if the top row is full.
 
+  # unused
   def makeMerges(self, column):
     """
     Makes all the merges in a column happen. The merging occurs in this way:

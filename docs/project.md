@@ -2,11 +2,14 @@
 https://play.google.com/store/apps/details?id=com.inspiredsquare.blocks
 
 # Goals
-# General goal
+## General goal
 Make both a mobile and a desktop clone of the game. 
 
 # Specific goals
-- Make proof of concept by 20200322-000000
+- Make proof of concept
 - Research graphic libraries for Python and Android
-- Implement Python desktop game by 20200329
+- Implement Python desktop game
 - Implement Android desktop game
+
+# Requirements
+- The game will have a square grid made up of integers that represent all of the blocks.

@@ -3,4 +3,5 @@
 - [x] 3 Let `grid` also be a tuple of integers that replace `width` and `height`
 - [ ] 4 Handle all exceptions
 - [ ] 5 At shoot, it looks like self.mergedDown()
-- [ ] 6 Greedy column and row merging
+- [ ] 6 Greedy column and row merging.
+- [ ] 7 Implement a function that can load the full grid representation.
