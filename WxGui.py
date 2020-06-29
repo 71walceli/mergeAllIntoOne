@@ -6,7 +6,7 @@ class wxBlock(wx.Button):
     self.position = position
     self.client = client
     #gameBlock = client.game.getGrid()[y][x]
-    wx.Button.__init__(self, client, wx.ID_ANY, *args, **kwargs)
+    super().__init__(client, wx.ID_ANY, *args, **kwargs)
     self.update()
 
   def update(self):
@@ -23,14 +23,15 @@ class wxClient(wx.Frame):
     # TODO 7 Implement a function that can load the full grid representation.
     self.createGrid()
     gameSizer.Add(self.gamePanel, 0, wx.ALL, 10)
-    #self.AddChild(gameSizer)
+    self.SetSizer(gameSizer)
 
   def createGrid(self):
-    self.gamePanel = wx.GridSizer(self.game.getWidth(), self.game.getHeight(), 0, 0)
+    self.gamePanel = wx.GridBagSizer(3, 3)
     for y in range(len(self.game.getGrid())):
       for x in range(len(self.game.getGrid()[y])):
-        self.gamePanel.Add(wxBlock(self, (x,y)), 0, wx.EXPAND)  # BUG 8 Only one of the buttons
-        # actually show up, instead of showing all the tiles.
+        #x, y = y, x
+        self.gamePanel.Add(wxBlock(self, (x,y)), pos=(x,y), span=(1,1), 
+          flag=wx.EXPAND)
 
 
   def updateGrid(self):
