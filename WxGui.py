@@ -26,11 +26,11 @@ class wxClient(wx.Frame):
     self.SetSizer(gameSizer)
 
   def createGrid(self):
-    self.gamePanel = wx.GridBagSizer(3, 3)
+    self.gamePanel = wx.GridSizer(self.game.getHeight(), self.game.getWidth(), 
+      3, 3)
     for y in range(len(self.game.getGrid())):
       for x in range(len(self.game.getGrid()[y])):
-        #x, y = y, x
-        self.gamePanel.Add(wxBlock(self, (x,y)), pos=(x,y), span=(1,1), 
+        self.gamePanel.Add(wxBlock(self, (x,y)), 
           flag=wx.EXPAND)
 
 
@@ -43,6 +43,6 @@ width, height = 5, 7
 
 app = wx.App()
 game = MergeAllIntoOne.MergeAllIntoOne(grid=(width, height))  
-frame = wxClient(game, None, title="Hello World")
+frame = wxClient(game, None, title="MergeAllIntoOne")
 frame.Show()
 app.MainLoop()
